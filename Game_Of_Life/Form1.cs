@@ -462,5 +462,16 @@ namespace Game_Of_Life
 
         #endregion
 
+        private void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            //New save Modal Dialog
+            SaveFileDialog save = new SaveFileDialog();
+
+            //Checks to see if ok is selected
+            if(DialogResult.OK == save.ShowDialog())
+            {
+                //TODO
+            }
+        }
     }
 }
