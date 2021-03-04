@@ -28,7 +28,7 @@ namespace Game_Of_Life
         int generations = 0;
 
         //Bool for toggling grid format
-        bool finite = true;
+        bool finite = false;
 
         //Bool to toggle neighbor count on/off
         bool neighborCount = true;
@@ -368,6 +368,58 @@ namespace Game_Of_Life
             //Will end the program if selected
             Application.Exit();
         }
+
+        //Color Changer
+        #region Colors
+        //Grid
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = gridColor;
+
+            //Check if ok is selected
+            if(DialogResult.OK == color.ShowDialog())
+            {
+                gridColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Cell
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = cellColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+               cellColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Back Panel
+        private void backColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = graphicsPanel1.BackColor;
+
+            //Check if ok is selected
+            if(DialogResult.OK == color.ShowDialog())
+            {
+                graphicsPanel1.BackColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        #endregion
 
         //Save Button
         //TODO
