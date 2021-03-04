@@ -313,7 +313,7 @@ namespace Game_Of_Life
 
         //Menu options
         #region Options
-        //New menu pull down
+        //New menu button
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Iterate through the universe in the y, top to bottom
@@ -334,27 +334,11 @@ namespace Game_Of_Life
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
         }
-        //New button
         private void newToolStripButton_Click(object sender, EventArgs e)
         {
-            // Iterate through the universe in the y, top to bottom
-            for (int y = 0; y < universe.GetLength(1); y++)
-            {
-                // Iterate through the universe in the x, left to right
-                for (int x = 0; x < universe.GetLength(0); x++)
-                {
-                    universe[x, y] = false;
-                }
-            }
-            //Resets generation to 0
-            generations = 0;
-            //Stops timer
-            timer.Enabled = false;
-            // Update status strip generations
-            toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
-            // Tell Windows you need to repaint
-            graphicsPanel1.Invalidate();
+            newToolStripMenuItem_Click(sender, e);
         }
+
         //Start menu button
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
@@ -364,23 +348,65 @@ namespace Game_Of_Life
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
         }
+
         //Pause menu button
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             //Pause the timeer
             timer.Enabled = false;
         }
+
         //Step menu button
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
             NextGeneration();
         }
+
         //Exit
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Will end the program if selected
             Application.Exit();
         }
+
+        //Save Button
+        //TODO
+        private void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            //New save Modal Dialog
+            SaveFileDialog save = new SaveFileDialog();
+
+            //Checks to see if ok is selected
+            if (DialogResult.OK == save.ShowDialog())
+            {
+                //TODO
+
+            }
+        }
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveToolStripButton_Click(sender, e);
+        }
+
+        //Load Button
+        //TODO
+        private void openToolStripButton_Click(object sender, EventArgs e)
+        {
+            //New open Modal Dialog
+            OpenFileDialog open = new OpenFileDialog();
+
+            //Checks to see if ok is selected
+            if(DialogResult.OK == open.ShowDialog())
+            {
+                //TODO
+
+            }
+        }
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openToolStripButton_Click(sender, e);
+        }
+
         //Grid Style toggle
         private void finiteToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -458,20 +484,10 @@ namespace Game_Of_Life
 
             graphicsPanel1.Invalidate();
         }
-        #endregion
 
         #endregion
 
-        private void saveToolStripButton_Click(object sender, EventArgs e)
-        {
-            //New save Modal Dialog
-            SaveFileDialog save = new SaveFileDialog();
+        #endregion
 
-            //Checks to see if ok is selected
-            if(DialogResult.OK == save.ShowDialog())
-            {
-                //TODO
-            }
-        }
     }
 }
