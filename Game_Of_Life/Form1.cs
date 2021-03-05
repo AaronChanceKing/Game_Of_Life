@@ -12,6 +12,7 @@ namespace Game_Of_Life
 {
     public partial class Form1 : Form
     {
+
         // The universe array
         bool[,] universe = new bool[10, 10];
         bool[,] scratchPad = new bool[10, 10];
@@ -23,6 +24,7 @@ namespace Game_Of_Life
 
         // The Timer class
         Timer timer = new Timer();
+        int interval = 100;
 
         // Generation count
         int generations = 0;
@@ -40,10 +42,17 @@ namespace Game_Of_Life
             //Change Title
             this.Text = Properties.Resources.AppName;
 
+
             // Setup the timer
-            timer.Interval = 100; // milliseconds
+            timer.Interval = interval; // milliseconds
             timer.Tick += Timer_Tick;
             timer.Enabled = false; // start timer stoped
+
+            // Status strip timer interval
+            toolStripStatusInterval.Text = "Timer Interval = " + interval.ToString();
+
+            // Status strip Cell Size
+            toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
         }
 
         //Counting Neighbors Finite
@@ -201,6 +210,7 @@ namespace Game_Of_Life
 
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
+
         }
 
         // The event called by the timer every Interval milliseconds.
@@ -377,6 +387,35 @@ namespace Game_Of_Life
         {
             //Will end the program if selected
             Application.Exit();
+        }
+
+        //Options Button
+        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Options options = new Options();
+
+            //Set default options to Modial dialog
+            options.Timer = interval;
+            options.CellWidth = universe.GetLength(0);
+            options.CellHeight = universe.GetLength(1);
+
+            //Check if ok is selected
+            if (DialogResult.OK == options.ShowDialog())
+            {
+                //Change the variables in form1
+                interval = options.Timer;
+                universe = new bool[options.CellWidth, options.CellHeight];
+                scratchPad = new bool[options.CellWidth, options.CellHeight];
+
+                graphicsPanel1.Invalidate();
+
+                //Update status strip
+                // Status strip timer interval
+                toolStripStatusInterval.Text = "Timer Interval = " + interval.ToString();
+
+                // Status strip Cell Size
+                toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
+            }
         }
 
         //Color Changer
