@@ -345,6 +345,11 @@ namespace Game_Of_Life
             //Enable the timer
             timer.Enabled = true;
 
+            //Enable Pause
+            toolStripButtonPause.Enabled = true;
+            //Disable Start
+            toolStripButtonStart.Enabled = false;
+
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
         }
@@ -354,6 +359,11 @@ namespace Game_Of_Life
         {
             //Pause the timeer
             timer.Enabled = false;
+
+            //Enable Start
+            toolStripButtonStart.Enabled = true;
+            //Disable Pause
+            toolStripButtonPause.Enabled = false;
         }
 
         //Step menu button
@@ -459,19 +469,7 @@ namespace Game_Of_Life
             openToolStripButton_Click(sender, e);
         }
 
-        //Grid Style toggle
-        private void finiteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Finite grid style
-            finite = true;
-        }
-        private void tordialToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //Tordial grid style
-            finite = false;
-        }
-
-        //Random options
+         //Random options
         #region Random
         //Random Region
         private void randomToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -518,6 +516,7 @@ namespace Game_Of_Life
             gridColor = toggleColor;
             toggleColor = hold;
 
+
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
 
@@ -535,6 +534,27 @@ namespace Game_Of_Life
             }
 
             graphicsPanel1.Invalidate();
+        }
+        //Grid Style toggle
+        private void finiteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Finite grid style
+            finite = true;
+            //Uncheck
+            tordialToolStripMenuItem.Checked = false;
+            //Check box
+            finiteToolStripMenuItem.Checked = true;
+        }
+        private void tordialToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Tordial grid style
+            finite = false;
+            //UnCheck
+            finiteToolStripMenuItem.Checked = false;
+            //Check box
+            tordialToolStripMenuItem.Checked = true;
+
+
         }
 
         #endregion
