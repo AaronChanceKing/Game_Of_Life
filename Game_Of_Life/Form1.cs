@@ -12,7 +12,7 @@ namespace Game_Of_Life
 {
     public partial class Form1 : Form
     {
-
+        
         // The universe array
         bool[,] universe = new bool[10, 10];
         bool[,] scratchPad = new bool[10, 10];
