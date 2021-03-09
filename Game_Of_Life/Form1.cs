@@ -30,6 +30,9 @@ namespace Game_Of_Life
         // Generation count
         int generations = 0;
 
+        //Cells alive
+        int aliveCells = 0;
+
         //Bool for toggling grid format
         bool finite = false;
 
@@ -209,6 +212,8 @@ namespace Game_Of_Life
                 {
                     //empty the scrach pad
                     scratchPad[x, y] = false;
+                    //Empty alive cells
+                    aliveCells = 0;
                 }
             }
 
@@ -220,7 +225,6 @@ namespace Game_Of_Life
 
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
-
         }
 
         // The event called by the timer every Interval milliseconds.
@@ -306,7 +310,7 @@ namespace Game_Of_Life
 
             // Cleaning up pens and brushes
             gridPen.Dispose();
-            cellBrush.Dispose();
+            cellBrush.Dispose();\
         }
 
         private void graphicsPanel1_MouseClick(object sender, MouseEventArgs e)
@@ -531,18 +535,85 @@ namespace Game_Of_Life
         }
 
         //Load Button
-        //TODO
         private void openToolStripButton_Click(object sender, EventArgs e)
         {
             //New open Modal Dialog
             OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "All Files|*.*|Cells|*.cells";
+            open.FilterIndex = 2;
 
             //Checks to see if ok is selected
             if(DialogResult.OK == open.ShowDialog())
             {
-                //TODO
+                    StreamReader reader = new StreamReader(open.FileName);
+                    //Create variables to calculate width and height of data
+                    int maxWidth = 0;
+                    int maxHeight = 0;
 
+                    //Iterate though file to get its size
+                    while (!reader.EndOfStream)
+                    {
+                        string row = reader.ReadLine();
+                        if (row.StartsWith("!"))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            maxHeight++;
+                        }
+                        maxWidth = row.Length;
+                    }
+                    //Resize universe/Scrachpad
+                    universe = new bool[maxWidth, maxHeight];
+                    scratchPad = new bool[maxWidth, maxHeight];
+
+                    //Reset file pointer back to beggining of file
+                    reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                //Iterate though file
+                while (!reader.EndOfStream)
+                {
+                    for (int y = 0; y < universe.GetLength(1); y++)
+                    {
+                        string row = reader.ReadLine();
+
+                        if (row.StartsWith("!"))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            //Iterate through row of cells
+                            for (int x = 0; x < row.Length; x++)
+                            {
+
+                                if (row[x] == 'O')
+                                {
+                                    //Set cell to alive
+                                    universe[x, y] = true;
+                                }
+                                else
+                                {
+                                    //Set cell to dead
+                                    universe[x, y] = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                //Close file
+                reader.Close();
             }
+
+            // Status strip timer interval
+            toolStripStatusInterval.Text = "Timer Interval = " + interval.ToString();
+
+            // Status strip Cell Size
+            toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
+
+            //Redraw panel
+            graphicsPanel1.Invalidate();
         }
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
