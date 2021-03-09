@@ -264,9 +264,10 @@ namespace Game_Of_Life
                         e.Graphics.FillRectangle(cellBrush, cellRect);
                     }
 
-                    // Outline the cell with a pen
+                     // Outline the cell with a pen
                     e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
-
+                    
+                    
                     if (neighborCount == true)
                     {
                         //Draw cell count
