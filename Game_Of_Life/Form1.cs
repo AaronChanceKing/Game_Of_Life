@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -486,16 +487,41 @@ namespace Game_Of_Life
         }
 
         //Save Button
-        //TODO
         private void saveToolStripButton_Click(object sender, EventArgs e)
         {
             //New save Modal Dialog
             SaveFileDialog save = new SaveFileDialog();
+            save.Filter = "All Files|*.*|Cells|*.cells";
+            save.FilterIndex = 2; save.DefaultExt = "cells";
 
             //Checks to see if ok is selected
             if (DialogResult.OK == save.ShowDialog())
             {
-                //TODO
+                StreamWriter writer = new StreamWriter(save.FileName);
+
+                //Iterate thought the universe
+                for(int y = 0; y < universe.GetLength(1); y++)
+                {
+                    //Create a string to represent the current row
+                    String currentRow = string.Empty;
+                    for(int x = 0; x < universe.GetLength(0); x++)
+                    {
+                        if (universe[x, y] == true)
+                        {
+                            //append 'O' for true
+                            currentRow += "O";
+                        }
+                        else
+                        {
+                            //append '.' for false
+                            currentRow += ".";
+                        }
+                    }
+                    //Write to file using WriteLine
+                    writer.WriteLine(currentRow);
+                }
+                //Close Writer
+                writer.Close();
 
             }
         }
