@@ -419,58 +419,6 @@ namespace Game_Of_Life
             }
         }
 
-        //Color Changer
-        #region Colors
-        //Grid
-        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ColorDialog color = new ColorDialog();
-            //Display current color
-            color.Color = gridColor;
-
-            //Check if ok is selected
-            if(DialogResult.OK == color.ShowDialog())
-            {
-                gridColor = color.Color;
-            }
-
-            //Tell window to redraw
-            graphicsPanel1.Invalidate();
-        }
-        //Cell
-        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ColorDialog color = new ColorDialog();
-            //Display current color
-            color.Color = cellColor;
-
-            //Check if ok is selected
-            if (DialogResult.OK == color.ShowDialog())
-            {
-               cellColor = color.Color;
-            }
-
-            //Tell window to redraw
-            graphicsPanel1.Invalidate();
-        }
-        //Back Panel
-        private void backColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ColorDialog color = new ColorDialog();
-            //Display current color
-            color.Color = graphicsPanel1.BackColor;
-
-            //Check if ok is selected
-            if(DialogResult.OK == color.ShowDialog())
-            {
-                graphicsPanel1.BackColor = color.Color;
-            }
-
-            //Tell window to redraw
-            graphicsPanel1.Invalidate();
-        }
-        #endregion
-
         //Save Button
         //TODO
         private void saveToolStripButton_Click(object sender, EventArgs e)
@@ -543,8 +491,62 @@ namespace Game_Of_Life
         }
         #endregion
 
+        //Color Changer
+        #region Colors
+
+        //Grid
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = gridColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                gridColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Cell
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = cellColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                cellColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Back Panel
+        private void backColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = graphicsPanel1.BackColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                graphicsPanel1.BackColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        #endregion
+
         //Toggle options
         #region Toggles
+
         //Toggle Grid
         private void toggleGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -594,6 +596,60 @@ namespace Game_Of_Life
             //Check box
             tordialToolStripMenuItem.Checked = true;
 
+
+        }
+
+        #endregion
+
+        //Contex menu
+        #region contex
+
+        //Grid Color
+        private void gridToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colorToolStripMenuItem_Click(sender, e);
+        }
+        //Cell Color
+        private void cellToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            cellColorToolStripMenuItem_Click(sender, e);
+        }
+        //BackGround Color
+        private void backGroundToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            backColorToolStripMenuItem_Click(sender, e);
+        }
+
+        //Save
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            saveToolStripButton_Click(sender, e);
+        }
+        //Load
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openToolStripButton_Click(sender, e);
+        }
+
+        //Random 1/3
+        private void randomToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            randomToolStripMenuItem1_Click(sender, e);
+        }
+        //--------------------------------
+        //Random Time                   //
+        //To-DO                         //
+        //--------------------------------
+        private void randomByTimeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+        //--------------------------------
+        //Random Seed                   //
+        //To-DO                         //
+        //--------------------------------
+        private void randomBySeedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
         }
 
