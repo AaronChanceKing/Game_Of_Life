@@ -39,6 +39,15 @@ namespace Game_Of_Life
         {
             InitializeComponent();
 
+            //Read Settings
+            graphicsPanel1.BackColor = Properties.Settings.Default.BackColor;
+            gridColor = Properties.Settings.Default.GridColor;
+            cellColor = Properties.Settings.Default.CellColor;
+            interval = Properties.Settings.Default.Timer;
+            finite = Properties.Settings.Default.GridStyle;
+            universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+            scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+
             //Change Title
             this.Text = Properties.Resources.AppName;
 
@@ -388,6 +397,63 @@ namespace Game_Of_Life
         {
             //Will end the program if selected
             Application.Exit();
+        }
+
+        //Settings Closed
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            //Read in settings
+            Properties.Settings.Default.BackColor = graphicsPanel1.BackColor;
+            Properties.Settings.Default.GridColor = gridColor;
+            Properties.Settings.Default.CellColor = cellColor;
+            Properties.Settings.Default.Timer = interval;
+            Properties.Settings.Default.GridStyle = finite;
+            Properties.Settings.Default.GridWidth = universe.GetLength(0);
+            Properties.Settings.Default.GridHeight = universe.GetLength(1);
+
+
+            //Set settings
+            Properties.Settings.Default.Save();
+        }
+        //Reset Settings to default
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Reset();
+
+            //Read Settings
+            graphicsPanel1.BackColor = Properties.Settings.Default.BackColor;
+            gridColor = Properties.Settings.Default.GridColor;
+            cellColor = Properties.Settings.Default.CellColor;
+            interval = Properties.Settings.Default.Timer;
+            finite = Properties.Settings.Default.GridStyle;
+            universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+            scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+
+            // Status strip timer interval
+            toolStripStatusInterval.Text = "Timer Interval = " + interval.ToString();
+
+            // Status strip Cell Size
+            toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
+        }
+        //Reload Settings to last 'saved' setting
+        private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.Reload();
+
+            //Read Settings
+            graphicsPanel1.BackColor = Properties.Settings.Default.BackColor;
+            gridColor = Properties.Settings.Default.GridColor;
+            cellColor = Properties.Settings.Default.CellColor;
+            interval = Properties.Settings.Default.Timer;
+            finite = Properties.Settings.Default.GridStyle;
+            universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+            scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+
+            // Status strip timer interval
+            toolStripStatusInterval.Text = "Timer Interval = " + interval.ToString();
+
+            // Status strip Cell Size
+            toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
         }
 
         //Options Button
