@@ -40,6 +40,9 @@ namespace Game_Of_Life
         //Bool to toggle neighbor count on/off
         bool neighborCount = true;
 
+        //Seed for random
+        int seed = 0;
+
         #endregion
 
         public Form1()
@@ -704,9 +707,9 @@ namespace Game_Of_Life
         //Random by time
         private void randomByTimeToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            //Initilize Date Time
-            Random rng = new Random();
-            DateTime currentTime = DateTime.Now;
+            //Initilize Random class using Date Time
+            int seed = (int)DateTime.Now.Ticks;
+            Random rng = new Random(seed);
 
             //Clear the current universe
             for (int y = 0; y < universe.GetLength(1); y++)
@@ -722,8 +725,8 @@ namespace Game_Of_Life
             {
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
-                    int alive = rng.Next(0, currentTime);
-                    if (alive == 0)
+                    int alive = rng.Next();
+                    if (seed > alive)
                     {
                         universe[x, y] = true;
                     }
@@ -736,7 +739,44 @@ namespace Game_Of_Life
         //Random by seed
         private void randomBySeedToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            //New seed modial dialog box
+            Seed seedModial = new Seed();
 
+            //Display current seed
+            seedModial.SeedInput = seed;
+
+            //Check if ok is selected
+            if (DialogResult.OK == seedModial.ShowDialog())
+            {
+                 seed = seedModial.SeedInput;
+            }
+
+            //Initilize Random class using seed
+            Random rng = new Random(seed);
+
+            //Clear the current universe
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+
+            //Set cells to alive based on rng         
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    int alive = rng.Next(0, seed);
+                    if ((seed / 2) < alive)
+                    {
+                        universe[x, y] = true;
+                    }
+                }
+            }
+            // Tell Windows you need to repaint
+            graphicsPanel1.Invalidate();
         }
         #endregion
 
