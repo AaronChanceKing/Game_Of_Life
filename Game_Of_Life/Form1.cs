@@ -13,7 +13,8 @@ namespace Game_Of_Life
 {
     public partial class Form1 : Form
     {
-        
+        //Variables
+        #region Variables
         // The universe array
         bool[,] universe = new bool[10, 10];
         bool[,] scratchPad = new bool[10, 10];
@@ -38,6 +39,8 @@ namespace Game_Of_Life
 
         //Bool to toggle neighbor count on/off
         bool neighborCount = true;
+
+        #endregion
 
         public Form1()
         {
@@ -68,96 +71,23 @@ namespace Game_Of_Life
             toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
         }
 
-        //Counting Neighbors Finite
-        private int CountNeighbors(int x, int y)
+        private void AliveCount()
         {
-            if (finite == true)
+            // Iterate through the universe in the y, top to bottom
+            for (int yCell = 0; yCell < universe.GetLength(1); yCell++)
             {
-                int count = 0;
-                int xLen = universe.GetLength(0);
-                int yLen = universe.GetLength(1);
-
-                for (int yOffset = -1; yOffset <= 1; yOffset++)
+                // Iterate through the universe in the x, left to right
+                for (int xCell = 0; xCell < universe.GetLength(0); xCell++)
                 {
-                    for (int xOffset = -1; xOffset <= 1; xOffset++)
+                    if (universe[xCell, yCell] == true)
                     {
-                        int xCheck = x + xOffset;
-                        int yCheck = y + yOffset;
-
-                        //if xOffset and yOffset are both equal to 0 continue
-                        if (xOffset == 0 && yOffset == 0)
-                        {
-                            continue;
-                        }
-                        if (xCheck < 0)
-                        {
-                            continue;
-                        }
-                        if (yCheck < 0)
-                        {
-                            continue;
-                        }
-                        if (xCheck >= xLen)
-                        {
-                            continue;
-                        }
-                        if (yCheck >= yLen)
-                        {
-                            continue;
-                        }
-                        //Increase the neighbor count
-                        if (universe[xCheck, yCheck] == true) count++;
+                        aliveCells++;
                     }
-                }
-
-                return count;
-            }
-            else
-            {
-                return CountNeghborsToroidal(x, y);
-            }
-        }
-
-        //Counting Neighbors Toroidal
-        private int CountNeghborsToroidal(int x, int y)
-        {
-            int count = 0;
-            int xLen = universe.GetLength(0);
-            int yLen = universe.GetLength(1);
-
-            for (int yOffset = -1; yOffset <= 1; yOffset++)
-            {
-                for (int xOffset = -1; xOffset <= 1; xOffset++)
-                {
-                    int xCheck = x + xOffset;
-                    int yCheck = y + yOffset;
-
-                    if (xOffset == 0 && yOffset == 0)
-                    {
-                        continue;
-                    }
-                    if (xCheck < 0)
-                    {
-                        xCheck = (xLen - 1);
-                    }
-                    if (yCheck < 0)
-                    {
-                        yCheck = (yLen - 1);
-                    }
-                    if (xCheck >= xLen)
-                    {
-                        xCheck = 0;
-                    }
-                    if (yCheck >= yLen)
-                    {
-                        yCheck = 0;
-                    }
-                    //Increase the neighbor count
-                    if (universe[xCheck, yCheck] == true) count++;
+                    toolStripStatusLabelAlive.Text = "Alive = " + aliveCells.ToString();
                 }
             }
-
-            return count;
+            //Empty the alive cells
+            aliveCells = 0;
         }
 
         // Calculate the next generation of cells
@@ -233,6 +163,7 @@ namespace Game_Of_Life
             NextGeneration();
         }
 
+        //Paints the graphics panel
         private void graphicsPanel1_Paint(object sender, PaintEventArgs e)
         {
             // Calculate the width and height of each cell in pixels
@@ -307,12 +238,15 @@ namespace Game_Of_Life
                     }
                 }
             }
+            //Get alive count
+            AliveCount();
 
             // Cleaning up pens and brushes
             gridPen.Dispose();
-            cellBrush.Dispose();\
+            cellBrush.Dispose();
         }
 
+        //Activate or deactivate cell on left mouse click
         private void graphicsPanel1_MouseClick(object sender, MouseEventArgs e)
         {
             // If the left mouse button was clicked
@@ -331,10 +265,106 @@ namespace Game_Of_Life
                 // Toggle the cell's state
                 universe[(int)x, (int)y] = !universe[(int)x, (int)y];
 
+                
                 // Tell Windows you need to repaint
                 graphicsPanel1.Invalidate();
             }
         }
+
+        //Counting Neighbors 
+        #region Counting Neighbors
+        //Finite
+        private int CountNeighbors(int x, int y)
+        {
+            if (finite == true)
+            {
+                int count = 0;
+                int xLen = universe.GetLength(0);
+                int yLen = universe.GetLength(1);
+
+                for (int yOffset = -1; yOffset <= 1; yOffset++)
+                {
+                    for (int xOffset = -1; xOffset <= 1; xOffset++)
+                    {
+                        int xCheck = x + xOffset;
+                        int yCheck = y + yOffset;
+
+                        //if xOffset and yOffset are both equal to 0 continue
+                        if (xOffset == 0 && yOffset == 0)
+                        {
+                            continue;
+                        }
+                        if (xCheck < 0)
+                        {
+                            continue;
+                        }
+                        if (yCheck < 0)
+                        {
+                            continue;
+                        }
+                        if (xCheck >= xLen)
+                        {
+                            continue;
+                        }
+                        if (yCheck >= yLen)
+                        {
+                            continue;
+                        }
+                        //Increase the neighbor count
+                        if (universe[xCheck, yCheck] == true) count++;
+                    }
+                }
+
+                return count;
+            }
+            else
+            {
+                return CountNeghborsToroidal(x, y);
+            }
+        }
+        //Toroidal
+        private int CountNeghborsToroidal(int x, int y)
+        {
+            int count = 0;
+            int xLen = universe.GetLength(0);
+            int yLen = universe.GetLength(1);
+
+            for (int yOffset = -1; yOffset <= 1; yOffset++)
+            {
+                for (int xOffset = -1; xOffset <= 1; xOffset++)
+                {
+                    int xCheck = x + xOffset;
+                    int yCheck = y + yOffset;
+
+                    if (xOffset == 0 && yOffset == 0)
+                    {
+                        continue;
+                    }
+                    if (xCheck < 0)
+                    {
+                        xCheck = (xLen - 1);
+                    }
+                    if (yCheck < 0)
+                    {
+                        yCheck = (yLen - 1);
+                    }
+                    if (xCheck >= xLen)
+                    {
+                        xCheck = 0;
+                    }
+                    if (yCheck >= yLen)
+                    {
+                        yCheck = 0;
+                    }
+                    //Increase the neighbor count
+                    if (universe[xCheck, yCheck] == true) count++;
+                }
+            }
+
+            return count;
+        }
+
+        #endregion
 
         //Menu options
         #region Options
@@ -352,10 +382,18 @@ namespace Game_Of_Life
             }
             //Resets generation to 0
             generations = 0;
+
             //Stops timer
             timer.Enabled = false;
+
             // Update status strip generations
             toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
+
+            //Enable Start
+            toolStripButtonStart.Enabled = true;
+            //Disable Pause
+            toolStripButtonPause.Enabled = false;
+
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
         }
@@ -374,6 +412,8 @@ namespace Game_Of_Life
             toolStripButtonPause.Enabled = true;
             //Disable Start
             toolStripButtonStart.Enabled = false;
+            //Disable Step
+            toolStripButtonNext.Enabled = false;
 
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
@@ -389,6 +429,8 @@ namespace Game_Of_Life
             toolStripButtonStart.Enabled = true;
             //Disable Pause
             toolStripButtonPause.Enabled = false;
+            //Enable Step
+            toolStripButtonNext.Enabled = true;
         }
 
         //Step menu button
@@ -439,6 +481,9 @@ namespace Game_Of_Life
 
             // Status strip Cell Size
             toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
+
+            //Repaint panel
+            graphicsPanel1.Invalidate();
         }
         //Reload Settings to last 'saved' setting
         private void reloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -459,6 +504,9 @@ namespace Game_Of_Life
 
             // Status strip Cell Size
             toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
+
+            //Repaint panel
+            graphicsPanel1.Invalidate();
         }
 
         //Options Button
@@ -622,7 +670,7 @@ namespace Game_Of_Life
 
          //Random options
         #region Random
-        //Random Region
+        //Random 1/3
         private void randomToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //Initilize Random class
@@ -651,6 +699,44 @@ namespace Game_Of_Life
             }
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
+        }
+
+        //Random by time
+        private void randomByTimeToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            //Initilize Date Time
+            Random rng = new Random();
+            DateTime currentTime = DateTime.Now;
+
+            //Clear the current universe
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+
+            //Set cells to alive based on rng         
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    int alive = rng.Next(0, currentTime);
+                    if (alive == 0)
+                    {
+                        universe[x, y] = true;
+                    }
+                }
+            }
+            // Tell Windows you need to repaint
+            graphicsPanel1.Invalidate();
+        }
+
+        //Random by seed
+        private void randomBySeedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
         }
         #endregion
 
