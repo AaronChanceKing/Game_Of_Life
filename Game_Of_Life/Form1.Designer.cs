@@ -83,9 +83,10 @@ namespace Game_Of_Life
             this.randomToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.randomByTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomBySeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.graphicsPanel1 = new Game_Of_Life.GraphicsPanel();
             this.randomByTimeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.randomBySeedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.graphicsPanel1 = new Game_Of_Life.GraphicsPanel();
+            this.toggleHUDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -178,6 +179,7 @@ namespace Game_Of_Life
             this.customizeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toggleGridToolStripMenuItem,
             this.toggleNeighborCountToolStripMenuItem,
+            this.toggleHUDToolStripMenuItem,
             this.toolStripSeparator3,
             this.colorToolStripMenuItem,
             this.cellColorToolStripMenuItem,
@@ -188,7 +190,7 @@ namespace Game_Of_Life
             this.resetToolStripMenuItem,
             this.reloadToolStripMenuItem});
             this.customizeToolStripMenuItem.Name = "customizeToolStripMenuItem";
-            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.customizeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.customizeToolStripMenuItem.Text = "&Customize";
             // 
             // toggleGridToolStripMenuItem
@@ -273,7 +275,7 @@ namespace Game_Of_Life
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.gridStyleToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
             // gridStyleToolStripMenuItem
@@ -316,7 +318,7 @@ namespace Game_Of_Life
             // randomToolStripMenuItem1
             // 
             this.randomToolStripMenuItem1.Name = "randomToolStripMenuItem1";
-            this.randomToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.randomToolStripMenuItem1.Size = new System.Drawing.Size(164, 22);
             this.randomToolStripMenuItem1.Text = "1/3 Random";
             this.randomToolStripMenuItem1.Click += new System.EventHandler(this.randomToolStripMenuItem1_Click);
             // 
@@ -531,6 +533,20 @@ namespace Game_Of_Life
             this.randomBySeedToolStripMenuItem.Text = "Random by Seed";
             this.randomBySeedToolStripMenuItem.Click += new System.EventHandler(this.randomBySeedToolStripMenuItem_Click);
             // 
+            // randomByTimeToolStripMenuItem1
+            // 
+            this.randomByTimeToolStripMenuItem1.Name = "randomByTimeToolStripMenuItem1";
+            this.randomByTimeToolStripMenuItem1.Size = new System.Drawing.Size(164, 22);
+            this.randomByTimeToolStripMenuItem1.Text = "Random by Time";
+            this.randomByTimeToolStripMenuItem1.Click += new System.EventHandler(this.randomByTimeToolStripMenuItem1_Click);
+            // 
+            // randomBySeedToolStripMenuItem1
+            // 
+            this.randomBySeedToolStripMenuItem1.Name = "randomBySeedToolStripMenuItem1";
+            this.randomBySeedToolStripMenuItem1.Size = new System.Drawing.Size(164, 22);
+            this.randomBySeedToolStripMenuItem1.Text = "Random by Seed";
+            this.randomBySeedToolStripMenuItem1.Click += new System.EventHandler(this.randomBySeedToolStripMenuItem1_Click);
+            // 
             // graphicsPanel1
             // 
             this.graphicsPanel1.BackColor = System.Drawing.Color.Gainsboro;
@@ -543,19 +559,15 @@ namespace Game_Of_Life
             this.graphicsPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.graphicsPanel1_Paint);
             this.graphicsPanel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.graphicsPanel1_MouseClick);
             // 
-            // randomByTimeToolStripMenuItem1
+            // toggleHUDToolStripMenuItem
             // 
-            this.randomByTimeToolStripMenuItem1.Name = "randomByTimeToolStripMenuItem1";
-            this.randomByTimeToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.randomByTimeToolStripMenuItem1.Text = "Random by Time";
-            this.randomByTimeToolStripMenuItem1.Click += new System.EventHandler(this.randomByTimeToolStripMenuItem1_Click);
-            // 
-            // randomBySeedToolStripMenuItem1
-            // 
-            this.randomBySeedToolStripMenuItem1.Name = "randomBySeedToolStripMenuItem1";
-            this.randomBySeedToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.randomBySeedToolStripMenuItem1.Text = "Random by Seed";
-            this.randomBySeedToolStripMenuItem1.Click += new System.EventHandler(this.randomBySeedToolStripMenuItem1_Click);
+            this.toggleHUDToolStripMenuItem.Checked = true;
+            this.toggleHUDToolStripMenuItem.CheckOnClick = true;
+            this.toggleHUDToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.toggleHUDToolStripMenuItem.Name = "toggleHUDToolStripMenuItem";
+            this.toggleHUDToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.toggleHUDToolStripMenuItem.Text = "Toggle HUD";
+            this.toggleHUDToolStripMenuItem.Click += new System.EventHandler(this.toggleHUDToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -639,6 +651,7 @@ namespace Game_Of_Life
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelAlive;
         private System.Windows.Forms.ToolStripMenuItem randomByTimeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem randomBySeedToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toggleHUDToolStripMenuItem;
     }
 }
 

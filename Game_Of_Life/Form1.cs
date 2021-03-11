@@ -40,6 +40,9 @@ namespace Game_Of_Life
         //Bool to toggle neighbor count on/off
         bool neighborCount = true;
 
+        //Bool to toggle the HUD
+        bool hud = true;
+
         //Seed for random
         int seed = 0;
 
@@ -55,6 +58,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
+            hud = Properties.Settings.Default.HUD;
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -74,7 +78,8 @@ namespace Game_Of_Life
             toolStripStatusCellSize.Text = "Universe Size = {" + universe.GetLength(0) + "}{" + universe.GetLength(1) + "}";
         }
 
-        private void AliveCount()
+        //Alive count
+        private int AliveCountInt()
         {
             // Iterate through the universe in the y, top to bottom
             for (int yCell = 0; yCell < universe.GetLength(1); yCell++)
@@ -86,11 +91,9 @@ namespace Game_Of_Life
                     {
                         aliveCells++;
                     }
-                    toolStripStatusLabelAlive.Text = "Alive = " + aliveCells.ToString();
                 }
             }
-            //Empty the alive cells
-            aliveCells = 0;
+            return aliveCells;
         }
 
         // Calculate the next generation of cells
@@ -215,34 +218,64 @@ namespace Game_Of_Life
                      // Outline the cell with a pen
                     e.Graphics.DrawRectangle(gridPen, cellRect.X, cellRect.Y, cellRect.Width, cellRect.Height);
                     
-                    
+                    //Draw neibhor count
                     if (neighborCount == true)
                     {
                         //Draw cell count
                         if (neighbors > 0)
                         {
-                            if (neighbors == 1)
+                            if (neighbors == 2 || neighbors == 3)
                             {
                                 //Black for 1 nearby cell
-                                e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Black, cellRect, stringFormat);
-                            }
-                            else if (neighbors == 2)
-                            {
-                                //Orange for 2 nearby cell
-                                e.Graphics.DrawString(neighbors.ToString(), font, Brushes.DarkOrange, cellRect, stringFormat);
+                                e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Green, cellRect, stringFormat);
                             }
                             else
                             {
                                 //Red for more than 2 nearby cells
-                                e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Firebrick, cellRect, stringFormat);
+                                e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Red, cellRect, stringFormat);
                             }
 
                         }
                     }
+
+                    //Draw HUD
+                    if(hud == true)
+                    {
+                        // A rectangle for HUD
+                        Rectangle hudRect = Rectangle.Empty;
+                        hudRect.X = graphicsPanel1.ClientSize.Width % 10;
+                        hudRect.Y = graphicsPanel1.ClientSize.Height / 2;
+                        hudRect.Width = graphicsPanel1.ClientSize.Width / 2;
+                        hudRect.Height = graphicsPanel1.ClientSize.Height / 2;
+
+                        //Set up the stringFormat
+                        StringFormat hudFormat = new StringFormat();
+                        hudFormat.Alignment = StringAlignment.Near;
+                        hudFormat.LineAlignment = StringAlignment.Near;
+
+                        //Get Font size
+                        int fontSize = graphicsPanel1.ClientSize.Height / 20;
+                        Font hudFont = new Font("Arial", fontSize);
+
+                        //Draw the HUD
+                        e.Graphics.DrawString("Generations = " + generations.ToString(), hudFont, Brushes.Red, hudRect, hudFormat);
+                        e.Graphics.DrawString("\n\nAlive = " + AliveCountInt().ToString(), hudFont, Brushes.Red, hudRect, hudFormat);
+                        aliveCells = 0;
+                        if (finite == true)
+                        {
+                            e.Graphics.DrawString("\n\n\n\nBoundary Type = Finite", hudFont, Brushes.Red, hudRect, hudFormat);
+                        }
+                        else
+                        {
+                            e.Graphics.DrawString("\n\n\n\nBoundary Type = Tordial", hudFont, Brushes.Red, hudRect, hudFormat);
+                        }
+                    }
                 }
             }
-            //Get alive count
-            AliveCount();
+
+            //Draw alive count to strip
+            toolStripStatusLabelAlive.Text = "Alive = " + AliveCountInt().ToString();
+            aliveCells = 0;
 
             // Cleaning up pens and brushes
             gridPen.Dispose();
@@ -458,6 +491,7 @@ namespace Game_Of_Life
             Properties.Settings.Default.CellColor = cellColor;
             Properties.Settings.Default.Timer = interval;
             Properties.Settings.Default.GridStyle = finite;
+            Properties.Settings.Default.HUD = hud;
             Properties.Settings.Default.GridWidth = universe.GetLength(0);
             Properties.Settings.Default.GridHeight = universe.GetLength(1);
 
@@ -476,6 +510,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
+            hud = Properties.Settings.Default.HUD;
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -499,6 +534,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
+            hud = Properties.Settings.Default.HUD;
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -725,8 +761,8 @@ namespace Game_Of_Life
             {
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
-                    int alive = rng.Next();
-                    if (seed > alive)
+                    int alive = rng.Next(0, seed);
+                    if ((seed / 2) < alive)
                     {
                         universe[x, y] = true;
                     }
@@ -875,6 +911,9 @@ namespace Game_Of_Life
             tordialToolStripMenuItem.Checked = false;
             //Check box
             finiteToolStripMenuItem.Checked = true;
+
+            //Repaint panel
+            graphicsPanel1.Invalidate();
         }
         private void tordialToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -885,7 +924,23 @@ namespace Game_Of_Life
             //Check box
             tordialToolStripMenuItem.Checked = true;
 
+            //Repaint panel
+            graphicsPanel1.Invalidate();
 
+        }
+        //Toggle HUD
+        private void toggleHUDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (hud == true)
+            {
+                hud = false;
+            }
+            else
+            {
+                hud = true;
+            }
+
+            graphicsPanel1.Invalidate();
         }
 
         #endregion

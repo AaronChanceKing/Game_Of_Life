@@ -105,5 +105,17 @@ namespace Game_Of_Life.Properties {
                 this["GridHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool HUD {
+            get {
+                return ((bool)(this["HUD"]));
+            }
+            set {
+                this["HUD"] = value;
+            }
+        }
     }
 }
