@@ -17,6 +17,7 @@ namespace Game_Of_Life
 
         // The universe array
         bool[,] bug = new bool[10, 10];
+        bool[,] scrachPad = new bool[10, 10];
         bool[,] universe = new bool[10, 10];
 
         // Drawing colors
@@ -74,6 +75,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             hud = Properties.Settings.Default.HUD;
+            scrachPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             bug = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -93,131 +95,87 @@ namespace Game_Of_Life
                 // Iterate through the bug in the x, left to right
                 for (int x = 0; x < bug.GetLength(0); x++)
                 {
-                    if (bug[x, y] == true)
+                    try
                     {
-                        //move bug
-                        bug[x, y] = false;
-
-                        if (universe[x, y] == true)
+                        //If bug is in an alive cell
+                        if (universe[x, y] == true && bug[x, y] == true)
                         {
-                            //Up
-                            if (direction == move.North)
-                            {
-                                try
-                                {
-                                    bug[x + 1, y] = true;
-                                    direction = move.East;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                            //Right
-                            else if(direction == move.East)
-                            {
-                                try
-                                {
-                                    bug[x, y - 1] = true;
-                                    direction = move.South;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                            //Down
-                            else if(direction == move.South)
-                            {
-                                try
-                                {
-                                    bug[x - 1, y] = true;
-                                    direction = move.West;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                            //Left
-                            else if(direction == move.West)
-                            {
-                                try
-                                {
-                                    bug[x, y + 1] = true;
-                                    direction = move.North;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-
-                            //Turn cell off
+                            //Turn off cell
                             universe[x, y] = false;
-                        }
-                        else
-                        {
-                           //Up
-                           if(direction == move.North)
-                            {
-                                try
-                                {
-                                    bug[x - 1, y] = true;
-                                    direction = move.West;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                           //Right
-                           else if(direction == move.East)
-                            {
-                                try
-                                {
-                                    bug[x, y + 1] = true;
-                                    direction = move.North;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                           //Down
-                           else if(direction == move.South)
-                            {
-                                try
-                                {
-                                    bug[x + 1, y] = true;
-                                    direction = move.East;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
-                           //Left
-                           else if(direction == move.West)
-                            {
-                                try
-                                {
-                                    bug[x, y - 1] = true;
-                                    direction = move.South;
-                                }
-                                catch
-                                {
-                                    timer.Stop();
-                                }
-                            }
 
-                            //Turn cell on
-                            universe[x, y] = true;
+                            //Change direction 90 degrees and move forward one space
+                            switch (direction)
+                            {
+                                case move.North:
+                                    direction = move.East;
+                                    scrachPad[x + 1, y] = true;
+                                    break;
+                                case move.East:
+                                    direction = move.South;
+                                    scrachPad[x, y - 1] = true;
+                                    break;
+                                case move.South:
+                                    direction = move.West;
+                                    scrachPad[x - 1, y] = true;
+                                    break;
+                                case move.West:
+                                    direction = move.North;
+                                    scrachPad[x, y + 1] = true;
+                                    break;
+
+                            }
                         }
+                        //If bug is in a dead cell
+                        else if (universe[x, y] == false && bug[x, y] == true)
+                        {
+                            //Turn on cell
+                            universe[x, y] = true;
+
+                            //Change direction 90 degrees and move forward one space
+                            switch (direction)
+                            {
+                                case move.North:
+                                    direction = move.West;
+                                    scrachPad[x - 1, y] = true;
+                                    break;
+                                case move.West:
+                                    direction = move.South;
+                                    scrachPad[x, y - 1] = true;
+                                    break;
+                                case move.South:
+                                    direction = move.East;
+                                    scrachPad[x + 1, y] = true;
+                                    break;
+                                case move.East:
+                                    direction = move.North;
+                                    scrachPad[x, y + 1] = true;
+                                    break;
+                            }
+                        }
+                        //Remove old location for bug
+                        bug[x, y] = false;
+                    }
+                    catch
+                    {
+                        timer.Stop();
                     }
                 }
             }
+            //Swap bug and scratch pad
+            bool[,] hold = bug;
+            bug = scrachPad;
+            scrachPad = hold;
 
+            //Clear scrach pad
+            // Iterate through the bug in the y, top to bottom
+            for (int y = 0; y < bug.GetLength(1); y++)
+            {
+                // Iterate through the bug in the x, left to right
+                for (int x = 0; x < bug.GetLength(0); x++)
+                {
+                    scrachPad[x, y] = false;
+                }
+            }
 
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
@@ -482,6 +440,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             hud = Properties.Settings.Default.HUD;
+            scrachPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             bug = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -501,6 +460,7 @@ namespace Game_Of_Life
             cellColor = Properties.Settings.Default.CellColor;
             interval = Properties.Settings.Default.Timer;
             hud = Properties.Settings.Default.HUD;
+            scrachPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             bug = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
