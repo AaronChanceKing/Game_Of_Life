@@ -86,7 +86,6 @@ namespace Game_Of_Life
         }
 
         // Calculate the next generation of cells
-        //TODO
         private void NextGeneration()
         {
             // Iterate through the bug in the y, top to bottom
@@ -157,7 +156,18 @@ namespace Game_Of_Life
                     }
                     catch
                     {
+                        //Stop Timer
                         timer.Stop();
+                        //Display error message
+                        Error error = new Error();
+                        error.ShowDialog();
+
+                        //Reset play button
+                        toolStripButton1.Enabled = true;
+                        //Reset pause button
+                        toolStripButton2.Enabled = false;
+                        //Reset step button
+                        toolStripButton3.Enabled = true;
                     }
                 }
             }
@@ -511,6 +521,13 @@ namespace Game_Of_Life
             // Tell Windows you need to repaint
             graphicsPanel1.Invalidate();
         }
+
+        //Colors
+        #region Colors
+
+
+
+        #endregion
 
         #endregion
     }
