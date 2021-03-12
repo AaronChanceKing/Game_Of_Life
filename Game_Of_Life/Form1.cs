@@ -184,6 +184,11 @@ namespace Game_Of_Life
             // A Brush for filling living cells interiors (color)
             Brush cellBrush = new SolidBrush(cellColor);
 
+            //Semi-transparent color for HUD
+            Color custom = Color.FromArgb(175, Color.Red);
+            //A brush for the HUD string
+            Brush hudBrush = new SolidBrush(custom);
+
             //Set up the neighbor count
             StringFormat stringFormat = new StringFormat();
             stringFormat.Alignment = StringAlignment.Center;
@@ -261,20 +266,22 @@ namespace Game_Of_Life
             {
                 if (finite == true)
                 {
-                    e.Graphics.DrawString("\n\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Finite", hudFont, Brushes.Red, hudRect, hudFormat);
+                    e.Graphics.DrawString("\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Finite" + "\nGrid SIze = (" + universe.GetLength(0) + ", " + universe.GetLength(1) + ")", hudFont, hudBrush, hudRect, hudFormat);
                 }
                 else
                 {
-                    e.Graphics.DrawString("\n\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Tordial", hudFont, Brushes.Red, hudRect, hudFormat);
+                    e.Graphics.DrawString("\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Tordial" + "\nGrid SIze = (" + universe.GetLength(0) + ", " + universe.GetLength(1) + ")", hudFont, hudBrush, hudRect, hudFormat);
                 }
                 aliveCells = 0;
             }
 
             //Draw alive count to strip
             toolStripStatusLabelAlive.Text = "Alive = " + AliveCountInt().ToString();
+            //Reset the alive count for next generation
             aliveCells = 0;
 
             // Cleaning up pens and brushes
+            hudBrush.Dispose();
             gridPen.Dispose();
             cellBrush.Dispose();
         }
