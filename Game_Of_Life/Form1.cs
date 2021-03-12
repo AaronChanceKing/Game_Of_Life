@@ -193,6 +193,22 @@ namespace Game_Of_Life
             float area = cellHeight / 3;
             Font font = new Font("Arial", area);
 
+            // A rectangle for HUD
+            Rectangle hudRect = Rectangle.Empty;
+            hudRect.X = graphicsPanel1.ClientSize.Width % 10;
+            hudRect.Y = graphicsPanel1.ClientSize.Height / 2;
+            hudRect.Width = graphicsPanel1.ClientSize.Width / 2;
+            hudRect.Height = graphicsPanel1.ClientSize.Height / 2;
+
+            //Set up the stringFormat
+            StringFormat hudFormat = new StringFormat();
+            hudFormat.Alignment = StringAlignment.Near;
+            hudFormat.LineAlignment = StringAlignment.Near;
+
+            //Get Font size
+            int fontSize = graphicsPanel1.ClientSize.Height / 20;
+            Font hudFont = new Font("Arial", fontSize);
+
             // Iterate through the universe in the y, top to bottom
             for (int y = 0; y < universe.GetLength(1); y++)
             {
@@ -226,51 +242,32 @@ namespace Game_Of_Life
                         {
                             if (neighbors == 2 || neighbors == 3)
                             {
-                                //Black for 1 nearby cell
+                                //Green for 2 or 3 cells
                                 e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Green, cellRect, stringFormat);
                             }
                             else
                             {
-                                //Red for more than 2 nearby cells
+                                //Red for any other amount of cells
                                 e.Graphics.DrawString(neighbors.ToString(), font, Brushes.Red, cellRect, stringFormat);
                             }
 
                         }
                     }
-
-                    //Draw HUD
-                    if(hud == true)
-                    {
-                        // A rectangle for HUD
-                        Rectangle hudRect = Rectangle.Empty;
-                        hudRect.X = graphicsPanel1.ClientSize.Width % 10;
-                        hudRect.Y = graphicsPanel1.ClientSize.Height / 2;
-                        hudRect.Width = graphicsPanel1.ClientSize.Width / 2;
-                        hudRect.Height = graphicsPanel1.ClientSize.Height / 2;
-
-                        //Set up the stringFormat
-                        StringFormat hudFormat = new StringFormat();
-                        hudFormat.Alignment = StringAlignment.Near;
-                        hudFormat.LineAlignment = StringAlignment.Near;
-
-                        //Get Font size
-                        int fontSize = graphicsPanel1.ClientSize.Height / 20;
-                        Font hudFont = new Font("Arial", fontSize);
-
-                        //Draw the HUD
-                        e.Graphics.DrawString("Generations = " + generations.ToString(), hudFont, Brushes.Red, hudRect, hudFormat);
-                        e.Graphics.DrawString("\n\nAlive = " + AliveCountInt().ToString(), hudFont, Brushes.Red, hudRect, hudFormat);
-                        aliveCells = 0;
-                        if (finite == true)
-                        {
-                            e.Graphics.DrawString("\n\n\n\nBoundary Type = Finite", hudFont, Brushes.Red, hudRect, hudFormat);
-                        }
-                        else
-                        {
-                            e.Graphics.DrawString("\n\n\n\nBoundary Type = Tordial", hudFont, Brushes.Red, hudRect, hudFormat);
-                        }
-                    }
                 }
+            }
+
+            //Draw HUD
+            if (hud == true)
+            {
+                if (finite == true)
+                {
+                    e.Graphics.DrawString("\n\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Finite", hudFont, Brushes.Red, hudRect, hudFormat);
+                }
+                else
+                {
+                    e.Graphics.DrawString("\n\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString() + "\nBoundary Type = Tordial", hudFont, Brushes.Red, hudRect, hudFormat);
+                }
+                aliveCells = 0;
             }
 
             //Draw alive count to strip
