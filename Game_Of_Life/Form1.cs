@@ -401,6 +401,19 @@ namespace Game_Of_Life
 
         //Menu options
         #region Options
+        //BUG GAME
+        private static void ThreadProc()
+        {
+            Application.Run(new Bug());
+        }
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            //Open Bug panel and close Form1 panel
+            System.Threading.Thread bug = new System.Threading.Thread(new System.Threading.ThreadStart(ThreadProc));
+            bug.Start();
+            this.Close();
+        }
+
         //New menu button
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {

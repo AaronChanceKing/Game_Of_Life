@@ -117,5 +117,17 @@ namespace Game_Of_Life.Properties {
                 this["HUD"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Red")]
+        public global::System.Drawing.Color BugColor {
+            get {
+                return ((global::System.Drawing.Color)(this["BugColor"]));
+            }
+            set {
+                this["BugColor"] = value;
+            }
+        }
     }
 }
