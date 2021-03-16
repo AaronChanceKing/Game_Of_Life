@@ -40,7 +40,7 @@ namespace Game_Of_Life
         bool hud = true;
 
         //Bug movement
-        enum move { North = 1, East = 2, South = 3, West = 4};
+        enum move { North = 1, East = 2, South = 3, West = 4 };
         move direction = move.North;
 
         #endregion
@@ -62,7 +62,7 @@ namespace Game_Of_Life
             }
             return aliveCells;
         }
-        
+
         //Constructor
         public Bug()
         {
@@ -103,6 +103,7 @@ namespace Game_Of_Life
                             universe[x, y] = false;
 
                             //Change direction 90 degrees and move forward one space
+                            //Temporarally draw the new location of the bug to the scratchpad
                             switch (direction)
                             {
                                 case move.North:
@@ -131,6 +132,7 @@ namespace Game_Of_Life
                             universe[x, y] = true;
 
                             //Change direction 90 degrees and move forward one space
+                            //Temporarally draw the new location of the bug to the scratchpad
                             switch (direction)
                             {
                                 case move.North:
@@ -154,6 +156,7 @@ namespace Game_Of_Life
                         //Remove old location for bug
                         bug[x, y] = false;
                     }
+                    //Make sure bug isn't going out of the universe bounds
                     catch
                     {
                         //Stop Timer
@@ -246,7 +249,7 @@ namespace Game_Of_Life
                     cellRect.Y = y * cellHeight;
                     cellRect.Width = cellWidth;
                     cellRect.Height = cellHeight;
-                    
+
                     // Fill the cell with a brush if alive
                     if (universe[x, y] == true)
                     {
@@ -273,18 +276,18 @@ namespace Game_Of_Life
                     bugRect.Height = cellHeight;
 
                     //Fill cell if bug is alive
-                    if(bug[x, y] == true)
+                    if (bug[x, y] == true)
                     {
                         e.Graphics.FillRectangle(bugBrush, bugRect);
                     }
                 }
             }
 
-                    //Draw HUD
-                    if (hud == true)
+            //Draw HUD
+            if (hud == true)
             {
                 e.Graphics.DrawString("\n\n\nGenerations = " + generations.ToString() + "\nAlive = " + AliveCountInt().ToString(), hudFont, Brushes.Red, hudRect, hudFormat);
-                
+
                 aliveCells = 0;
             }
             // Cleaning up pens and brushes
@@ -296,6 +299,7 @@ namespace Game_Of_Life
         //Activate or deactivate cell on left mouse click
         private void graphicsPanel1_MouseClick_1(object sender, MouseEventArgs e)
         {
+            //Clears the bug from old array to allow only one bug at a time
             // Iterate through the bug in the y, top to bottom
             for (int y = 0; y < bug.GetLength(1); y++)
             {
@@ -371,6 +375,7 @@ namespace Game_Of_Life
         //Back to Conway
         private static void ThreadProc()
         {
+            //Start a new form1
             Application.Run(new Form1());
         }
         private void toolStripButton4_Click(object sender, EventArgs e)
@@ -482,17 +487,23 @@ namespace Game_Of_Life
         //Toggle HUD
         private void toggleHUDToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Checks current statis of HUD
             if (hud == true)
             {
+                //Turns HUD off
                 hud = false;
+                //unchecks the HUD toolStrip
                 toggleHUDToolStripMenuItem.Checked = false;
             }
             else
             {
+                //Turns on HUD
                 hud = true;
+                //Checks the HUD toolStrip
                 toggleHUDToolStripMenuItem.Checked = true;
             }
 
+            //Tells the window the re-paint
             graphicsPanel1.Invalidate();
         }
 
@@ -502,8 +513,8 @@ namespace Game_Of_Life
             //Place holder color
             Color hold;
 
-            //Checked check
-            if(gridColor == Color.Transparent)
+            //Checks if toolStrip is checked
+            if (gridColor == Color.Transparent)
             {
                 toggleGridToolStripMenuItem.Checked = false;
             }
@@ -522,13 +533,148 @@ namespace Game_Of_Life
             graphicsPanel1.Invalidate();
         }
 
+        //Options
+        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Options options = new Options();
+
+            //Set default options to Modial dialog
+            options.Timer = interval;
+            options.CellWidth = universe.GetLength(0);
+            options.CellHeight = universe.GetLength(1);
+
+            //Check if ok is selected
+            if (DialogResult.OK == options.ShowDialog())
+            {
+                //Change the variables in form1
+                interval = options.Timer;
+                bug = new bool[options.CellWidth, options.CellHeight];
+                universe = new bool[options.CellWidth, options.CellHeight];
+                scrachPad = new bool[options.CellWidth, options.CellHeight];
+            }
+            //Tells the windown the re-Paint
+            graphicsPanel1.Invalidate();
+        }
+
         //Colors
         #region Colors
+        //Grid Color
+        private void gridColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = gridColor;
 
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                gridColor = color.Color;
+            }
 
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Cell Color
+        private void cellColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = cellColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                cellColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Back Color
+        private void backColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = graphicsPanel1.BackColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                graphicsPanel1.BackColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
+        //Bug Color
+        private void bugColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = bugColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                bugColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
 
         #endregion
 
+        //Random
+        //TODO
+        #region Random
+        //Random 1/3
+        private void randomToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            //Initilize Random class
+            Random rng = new Random();
+
+            //Clear the current universe
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+
+            //Set cells to alive based on rng         
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    int alive = rng.Next(0, 3);
+                    if (alive == 0)
+                    {
+                        universe[x, y] = true;
+                    }
+                }
+            }
+            // Tell Windows you need to repaint
+            graphicsPanel1.Invalidate();
+        }
+        //Random 1/5
+        //TODO
+        private void randomToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+
+        }
+        //Random 1/10
+        //TODO
+        private void randomToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+
+        }
         #endregion
+
+        #endregion
+
+
     }
 }
+
