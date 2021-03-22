@@ -129,5 +129,17 @@ namespace Game_Of_Life.Properties {
                 this["BugColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
+        public global::System.Drawing.Color BrainColor {
+            get {
+                return ((global::System.Drawing.Color)(this["BrainColor"]));
+            }
+            set {
+                this["BrainColor"] = value;
+            }
+        }
     }
 }

@@ -648,9 +648,10 @@ namespace Game_Of_Life
             {
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
-                    int alive = rng.Next(0, 3);
+                    int alive = rng.Next(0, 2); //Generates # 0 - 2
                     if (alive == 0)
                     {
+                        //If # is 0 turns that cell on
                         universe[x, y] = true;
                     }
                 }
@@ -659,16 +660,66 @@ namespace Game_Of_Life
             graphicsPanel1.Invalidate();
         }
         //Random 1/5
-        //TODO
         private void randomToolStripMenuItem2_Click(object sender, EventArgs e)
         {
+            //Initilize Random class
+            Random rng = new Random();
 
+            //Clear the current universe
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+
+            //Set cells to alive based on rng         
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    int alive = rng.Next(0, 4); //Generates # 0 - 4
+                    if (alive == 0)
+                    {
+                        //If # is 0 turns that cell on
+                        universe[x, y] = true;
+                    }
+                }
+            }
+            // Tell Windows you need to repaint
+            graphicsPanel1.Invalidate();
         }
         //Random 1/10
-        //TODO
         private void randomToolStripMenuItem3_Click(object sender, EventArgs e)
         {
+            //Initilize Random class
+            Random rng = new Random();
 
+            //Clear the current universe
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    universe[x, y] = false;
+                }
+            }
+
+            //Set cells to alive based on rng         
+            for (int y = 0; y < universe.GetLength(1); y++)
+            {
+                for (int x = 0; x < universe.GetLength(0); x++)
+                {
+                    int alive = rng.Next(0, 9); //Generates # 0 - 9
+                    if (alive == 0)
+                    {
+                        //If # is 0 turns that cell on
+                        universe[x, y] = true;
+                    }
+                }
+            }
+            // Tell Windows you need to repaint
+            graphicsPanel1.Invalidate();
         }
         #endregion
 

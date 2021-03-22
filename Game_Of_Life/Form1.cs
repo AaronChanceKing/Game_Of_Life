@@ -18,11 +18,16 @@ namespace Game_Of_Life
         // The universe array
         bool[,] universe = new bool[10, 10];
         bool[,] scratchPad = new bool[10, 10];
+        //Brian's brain array
+        bool[,] brain = new bool[10, 10];
+        bool[,] brainPad = new bool[10, 10];
 
         // Drawing colors
         Color gridColor = Color.Black;
         Color cellColor = Color.Gray;
         Color toggleColor = Color.Transparent;
+        //Brain colors
+        Color brainColor = Color.Blue;
 
         // The Timer class
         Timer timer = new Timer();
@@ -43,6 +48,9 @@ namespace Game_Of_Life
         //Bool to toggle the HUD
         bool hud = true;
 
+        //Bool to toggle Brain logic
+        bool briansBrain = false;
+
         //Seed for random
         int seed = 0;
 
@@ -59,6 +67,9 @@ namespace Game_Of_Life
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
             hud = Properties.Settings.Default.HUD;
+            brainColor = Properties.Settings.Default.BrainColor;
+            brain = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
+            brainPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             universe = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
             scratchPad = new bool[(Properties.Settings.Default.GridWidth), (Properties.Settings.Default.GridHeight)];
 
@@ -99,6 +110,80 @@ namespace Game_Of_Life
         // Calculate the next generation of cells
         private void NextGeneration()
         {
+            if (briansBrain == false)
+            {
+                // Iterate through the universe in the y, top to bottom
+                for (int y = 0; y < universe.GetLength(1); y++)
+                {
+                    // Iterate through the universe in the x, left to right
+                    for (int x = 0; x < universe.GetLength(0); x++)
+                    {
+                        //Checks if cell is alive in universe
+                        if (universe[x, y] == true)
+                        {
+                            if (CountNeighbors(x, y) < 2)
+                            {
+                                //Under Population
+                                scratchPad[x, y] = false;
+                            }
+                            else if (CountNeighbors(x, y) > 3)
+                            {
+                                //Over Population
+                                scratchPad[x, y] = false;
+                            }
+                            else if (CountNeighbors(x, y) == 2 || CountNeighbors(x, y) == 3)
+                            {
+                                //Stays alive
+                                scratchPad[x, y] = true;
+                            }
+                        }
+                        //Checks if cell is dead in universe
+                        if (universe[x, y] == false)
+                        {
+                            if (CountNeighbors(x, y) == 3)
+                            {
+                                //Birth of cell
+                                scratchPad[x, y] = true;
+                            }
+                        }
+                    }
+                }
+                //Swap universe with scrach pad
+                bool[,] hold = universe;
+                universe = scratchPad;
+                scratchPad = hold;
+
+                // Iterate through the universe in the y, top to bottom
+                for (int y = 0; y < universe.GetLength(1); y++)
+                {
+                    // Iterate through the universe in the x, left to right
+                    for (int x = 0; x < universe.GetLength(0); x++)
+                    {
+                        //empty the scrach pad
+                        scratchPad[x, y] = false;
+                        //Empty alive cells
+                        aliveCells = 0;
+                    }
+                }
+
+                // Tell Windows you need to repaint
+                graphicsPanel1.Invalidate();
+
+                // Increment generation count
+                generations++;
+
+                // Update status strip generations
+                toolStripStatusLabelGenerations.Text = "Generations = " + generations.ToString();
+            }
+            else
+            {
+                NextGenerationBrain();
+            }
+        }
+
+        //Calculate the next generation of cells for Brains Brain logic
+        private void NextGenerationBrain()
+        {
             // Iterate through the universe in the y, top to bottom
             for (int y = 0; y < universe.GetLength(1); y++)
             {
@@ -108,26 +193,17 @@ namespace Game_Of_Life
                     //Checks if cell is alive in universe
                     if (universe[x, y] == true)
                     {
-                        if (CountNeighbors(x, y) < 2)
-                        {
-                            //Under Population
-                            scratchPad[x, y] = false;
-                        }
-                        else if (CountNeighbors(x, y) > 3)
-                        {
-                            //Over Population
-                            scratchPad[x, y] = false;
-                        }
-                        else if (CountNeighbors(x, y) == 2 || CountNeighbors(x, y) == 3)
-                        {
-                            //Stays alive
-                            scratchPad[x, y] = true;
-                        }
+                        brainPad[x, y] = true;
+                    }
+                    //Checks if cell alive in brain
+                    if(brain[x, y] == true)
+                    {
+                        brainPad[x, y] = false;
                     }
                     //Checks if cell is dead in universe
                     if (universe[x, y] == false)
                     {
-                        if (CountNeighbors(x, y) == 3)
+                        if (CountNeighbors(x, y) == 2 && brain[x, y] != true)
                         {
                             //Birth of cell
                             scratchPad[x, y] = true;
@@ -139,6 +215,10 @@ namespace Game_Of_Life
             bool[,] hold = universe;
             universe = scratchPad;
             scratchPad = hold;
+            //Swap brain with brainPad
+            bool[,] holdBrain = brain;
+            brain = brainPad;
+            brainPad = holdBrain;
 
             // Iterate through the universe in the y, top to bottom
             for (int y = 0; y < universe.GetLength(1); y++)
@@ -148,6 +228,8 @@ namespace Game_Of_Life
                 {
                     //empty the scrach pad
                     scratchPad[x, y] = false;
+                    brainPad[x, y] = false;
+
                     //Empty alive cells
                     aliveCells = 0;
                 }
@@ -411,6 +493,7 @@ namespace Game_Of_Life
         //BUG GAME
         private static void ThreadProc()
         {
+            //Run new Bug window
             Application.Run(new Bug());
         }
         private void toolStripButton1_Click_1(object sender, EventArgs e)
@@ -997,21 +1080,15 @@ namespace Game_Of_Life
         {
             randomToolStripMenuItem1_Click(sender, e);
         }
-        //--------------------------------
-        //Random Time                   //
-        //To-DO                         //
-        //--------------------------------
+        //Random Time
         private void randomByTimeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            randomByTimeToolStripMenuItem1_Click(sender, e);
         }
-        //--------------------------------
-        //Random Seed                   //
-        //To-DO                         //
-        //--------------------------------
+        //Random Seed
         private void randomBySeedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            randomBySeedToolStripMenuItem1_Click(sender, e);
         }
 
         #endregion
