@@ -265,9 +265,11 @@ namespace Game_Of_Life
 
             // A Brush for filling living cells interiors (color)
             Brush cellBrush = new SolidBrush(cellColor);
+            Brush brainBrush = new SolidBrush(brainColor);
 
             //Semi-transparent color for HUD
             Color custom = Color.FromArgb(175, Color.Red);
+
             //A brush for the HUD string
             Brush hudBrush = new SolidBrush(custom);
 
@@ -316,6 +318,11 @@ namespace Game_Of_Life
                     if (universe[x, y] == true)
                     {
                         e.Graphics.FillRectangle(cellBrush, cellRect);
+                    }
+                    //Fills the 'Dying cell with a brush if 'alive
+                    if(brain[x, y] == true)
+                    {
+                        e.Graphics.FillRectangle(brainBrush, cellRect);
                     }
 
                      // Outline the cell with a pen
@@ -366,6 +373,7 @@ namespace Game_Of_Life
             hudBrush.Dispose();
             gridPen.Dispose();
             cellBrush.Dispose();
+            brainBrush.Dispose();
         }
 
         //Activate or deactivate cell on left mouse click
@@ -390,6 +398,36 @@ namespace Game_Of_Life
                 
                 // Tell Windows you need to repaint
                 graphicsPanel1.Invalidate();
+            }
+        }
+
+        //Activate or deactive dying cell on left mouse double click
+        private void graphicsPanel1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            //Checks if brain logic is true
+            if (briansBrain == true)
+            {
+                // If the left mouse button was clicked
+                if (e.Button == MouseButtons.Left)
+                {
+                    // Calculate the width and height of each cell in pixels
+                    float cellWidth = (float)graphicsPanel1.ClientSize.Width / (float)brain.GetLength(0);
+                    float cellHeight = (float)graphicsPanel1.ClientSize.Height / (float)brain.GetLength(1);
+
+                    // Calculate the cell that was clicked in
+                    // CELL X = MOUSE X / CELL WIDTH
+                    float x = e.X / cellWidth;
+                    // CELL Y = MOUSE Y / CELL HEIGHT
+                    float y = e.Y / cellHeight;
+
+                    // Toggle the cell's state
+                    brain[(int)x, (int)y] = !brain[(int)x, (int)y];
+                    universe[(int)x, (int)y] = false;
+
+
+                    // Tell Windows you need to repaint
+                    graphicsPanel1.Invalidate();
+                }
             }
         }
 
@@ -504,6 +542,51 @@ namespace Game_Of_Life
             this.Close();
         }
 
+        //Change to brain logic
+        private void toolStripButton2_Click_1(object sender, EventArgs e)
+        {
+            if (briansBrain == false)
+            {
+                briansBrain = true;
+
+                //toggle off unusable buttons
+                saveToolStripButton.Enabled = false;
+                saveToolStripMenuItem.Enabled = false;
+                openToolStripButton.Enabled = false;
+                openToolStripMenuItem.Enabled = false;
+                randomByTimeToolStripMenuItem1.Enabled = false;
+                randomBySeedToolStripMenuItem1.Enabled = false;
+                contextMenuStrip1.Enabled = false;
+            }
+            else
+            {
+                briansBrain = false;
+
+                //toggle on usable buttons
+                saveToolStripButton.Enabled = true;
+                saveToolStripMenuItem.Enabled = true;
+                openToolStripButton.Enabled = true;
+                openToolStripMenuItem.Enabled = true;
+                randomByTimeToolStripMenuItem1.Enabled = true;
+                randomBySeedToolStripMenuItem1.Enabled = true;
+                contextMenuStrip1.Enabled = true;
+
+                //Turn of all brain cells
+                // Iterate through the brain in the y, top to bottom
+                for (int y = 0; y < brain.GetLength(1); y++)
+                {
+                    // Iterate through the brain in the x, left to right
+                    for (int x = 0; x < brain.GetLength(0); x++)
+                    {
+                        brain[x, y] = false;
+                    }
+                }
+
+                //Tell graphics panel to re-paint
+                graphicsPanel1.Invalidate();
+            }
+        }
+
         //New menu button
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -514,6 +597,7 @@ namespace Game_Of_Life
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
                     universe[x, y] = false;
+                    brain[x, y] = false;
                 }
             }
             //Resets generation to 0
@@ -589,6 +673,7 @@ namespace Game_Of_Life
             Properties.Settings.Default.BackColor = graphicsPanel1.BackColor;
             Properties.Settings.Default.GridColor = gridColor;
             Properties.Settings.Default.CellColor = cellColor;
+            Properties.Settings.Default.BrainColor = brainColor;
             Properties.Settings.Default.Timer = interval;
             Properties.Settings.Default.GridStyle = finite;
             Properties.Settings.Default.HUD = hud;
@@ -608,6 +693,7 @@ namespace Game_Of_Life
             graphicsPanel1.BackColor = Properties.Settings.Default.BackColor;
             gridColor = Properties.Settings.Default.GridColor;
             cellColor = Properties.Settings.Default.CellColor;
+            brainColor = Properties.Settings.Default.BrainColor;
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
             hud = Properties.Settings.Default.HUD;
@@ -632,6 +718,7 @@ namespace Game_Of_Life
             graphicsPanel1.BackColor = Properties.Settings.Default.BackColor;
             gridColor = Properties.Settings.Default.GridColor;
             cellColor = Properties.Settings.Default.CellColor;
+            brainColor = Properties.Settings.Default.BrainColor;
             interval = Properties.Settings.Default.Timer;
             finite = Properties.Settings.Default.GridStyle;
             hud = Properties.Settings.Default.HUD;
@@ -665,6 +752,8 @@ namespace Game_Of_Life
                 interval = options.Timer;
                 universe = new bool[options.CellWidth, options.CellHeight];
                 scratchPad = new bool[options.CellWidth, options.CellHeight];
+                brain = new bool[options.CellWidth, options.CellHeight];
+                brainPad = new bool[options.CellWidth, options.CellHeight];
 
                 graphicsPanel1.Invalidate();
 
@@ -821,6 +910,7 @@ namespace Game_Of_Life
                 for (int x = 0; x < universe.GetLength(0); x++)
                 {
                     universe[x, y] = false;
+                    brain[x, y] = false;
                 }
             }
 
@@ -833,6 +923,10 @@ namespace Game_Of_Life
                     if (alive == 0)
                     {
                         universe[x, y] = true;
+                    }
+                    if(alive == 1 && briansBrain == true)
+                    {
+                        brain[x, y] = true;
                     }
                 }
             }
@@ -967,6 +1061,22 @@ namespace Game_Of_Life
             //Tell window to redraw
             graphicsPanel1.Invalidate();
         }
+        //Dying Brain Color
+        private void dyingColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog color = new ColorDialog();
+            //Display current color
+            color.Color = brainColor;
+
+            //Check if ok is selected
+            if (DialogResult.OK == color.ShowDialog())
+            {
+                brainColor = color.Color;
+            }
+
+            //Tell window to redraw
+            graphicsPanel1.Invalidate();
+        }
         #endregion
 
         //Toggle options
@@ -1095,5 +1205,10 @@ namespace Game_Of_Life
 
         #endregion
 
+        //Just messing with logics
+        private void somethingNewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
